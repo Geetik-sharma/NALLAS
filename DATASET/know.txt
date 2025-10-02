@@ -1,0 +1,74 @@
+  # # json response assume we are passing dict. but now it is query set
+    # # return JsonResponse( stuinfo , safe=False)
+    # 
+    # #now we can searialize data manually by iterating thourgh query set and making a list 
+    # 
+    # stuinfo_list=list(stuinfo.values())
+    # 
+    # # OR we can use rest's serializers(conersion of query set to josn formate or any formate we require) here we will use model serializer
+    # return JsonResponse( stuinfo_list , safe=False)
+    # OR we can use rest's serializers(conersion of query set to josn formate or any formate we require) here we will use model serializer
+    # 
+
+
+What are Decorators in Django REST Framework?
+In Python, a decorator is just a function that modifies another function’s behavior.
+In Django REST Framework (DRF), decorators are used to convert normal Django views into API views and to control which HTTP methods are allowed.
+#
+🔹 Common DRF Decorators
+1. @api_view
+The most commonly used decorator in DRF.
+It converts a normal Django function into a DRF view.
+You must specify which HTTP methods the view supports
+
+
+2. @permission_classes
+
+Used to set permissions for a view.
+
+Example:
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    return Response({"user": str(request.user)})
+
+
+👉 Only logged-in users can access this.
+
+3. @authentication_classes
+
+Defines which authentication schemes apply to a view.
+
+Example:
+
+from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+def secure_view(request):
+    return Response({"message": "Secure endpoint"})
+
+4. @throttle_classes
+
+Used to control rate limiting (how many requests a user can make in a given time).
+
+from rest_framework.decorators import api_view, throttle_classes
+from rest_framework.throttling import AnonRateThrottle
+
+@api_view(['GET'])
+@throttle_classes([AnonRateThrottle])
+def limited_view(request):
+    return Response({"message": "This is rate limited"})
+
+🔹 Why use decorators in DRF?
+Convert simple Django views → REST API views.
+Restrict HTTP methods (GET, POST, PUT, DELETE).
+Apply authentication, permissions, throttling at the view level.
+Make code cleaner and more readable.
+2. @permission_classes
+Used to set permissions for a view.

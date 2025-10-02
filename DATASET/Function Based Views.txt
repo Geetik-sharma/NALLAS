@@ -1,0 +1,56 @@
+from django.shortcuts import render
+from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import StudentSerialzers
+from rest_framework.decorators import api_view
+from insurance import models
+
+# Create your views here.
+@api_view(['GET','POST'])
+def stuapi(request):
+
+    # stuinfo=models.student.objects.all()
+    # print(stuinfo)
+    # # json response assume we are passing dict. but now it is query set
+    # # return JsonResponse( stuinfo , safe=False)
+    # 
+    # #now we can searialize data manually by iterating thourgh query set and making a list 
+    # 
+    # stuinfo_list=list(stuinfo.values())
+    # 
+    # # OR we can use rest's serializers(conersion of query set to josn formate or any formate we require) here we will use model serializer
+    # return JsonResponse( stuinfo_list , safe=False)
+
+    # # OR we can use rest's serializers(conersion of query set to josn formate or any formate we require) here we will use model serializer
+    if request.method == "GET":
+        #get all data from student 
+        student=models.student.objects.all()
+        serializer=StudentSerialzers(student, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    elif (request.method == "POST"):
+        serializer=StudentSerialzers(data=request.data)
+        if(serializer.is_valid)():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','PUT',"DELETE"])
+def student_detail(request, pk):
+    try:
+        student=models.student.objects.get(pk=pk)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if(request.method=="GET"):
+        serializer=StudentSerialzers(student)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    elif(request.method=="PUT"):
+        serializer=StudentSerialzers(student,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    elif(request.method=='DELETE'):
+        student.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
