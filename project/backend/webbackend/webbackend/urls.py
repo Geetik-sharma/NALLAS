@@ -18,5 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 urlpatterns = [
     path('boomer/', admin.site.urls),
-    path("",include('insurance.urls')),
+    path("insurance",include('insurance.urls')),
+    path("employee",include('employee.urls')),
+    path("products",include("products.urls"))
 ]

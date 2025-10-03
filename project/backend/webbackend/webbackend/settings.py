@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'insurance',
     'api',
+    'employee',
+    'products',
 ]
 
 MIDDLEWARE = [
