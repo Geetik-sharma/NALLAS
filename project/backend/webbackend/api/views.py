@@ -1,5 +1,5 @@
 
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,7 +10,7 @@ from employee.models import employee
 from rest_framework.views import APIView
 from django.http import Http404
 from products.models import products
-from rest_framework import mixins,generics
+from rest_framework import mixins,generics,viewsets
 from owned.models import owned_products
 # Create your views here.
 
@@ -220,7 +220,7 @@ class Update_Prod(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.Des
         return self.destroy(request,pk)
     
 
-
+'''
 #owned products
 class owned(APIView):
     def get(self,request):
@@ -252,4 +252,37 @@ class update_owned(APIView):
             raise Http404
     def delete(self,request,pk):
         self.check(pk).delete()
+        return Response(status=status.HTTP_404_NOT_FOUND)
+'''
+
+"""by using viewset and router 
+we use viewset to perform all get post put retrive delete and update task under one function
+and use router to automatically handel the urls for simillar class
+"""
+
+class OwnedViewset(viewsets.ViewSet):
+    def list(self,request):
+        own=owned_products.objects.all()
+        serializer=OwnedSerializer(own,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    def create(self,request):
+        serializer=OwnedSerializer(data=request.data)
+        if (serializer.is_valid()):
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors)
+    def retrieve(self,request,pk=None):
+        own=get_object_or_404(owned_products,pk=pk)
+        serializer=OwnedSerializer(own)
+        return Response(serializer.data,status=status.HTTP_302_FOUND)
+    def update(self,request,pk=None):
+        serializer=OwnedSerializer(owned_products.objects.get(pk=pk),data=request.data)
+        if (serializer.is_valid()):
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self,request,pk):
+        owned_products.objects.get(pk=pk).delete()
         return Response(status=status.HTTP_404_NOT_FOUND)
