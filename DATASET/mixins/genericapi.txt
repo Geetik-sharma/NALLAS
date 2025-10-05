@@ -1,0 +1,58 @@
+'''    
+Mixins(reusable code classes in oop)
+django provide 5 built in mixins
+1. ListModelmixin list()
+2.createmodelmixin create()
+3.retrivemodel mixin retrive()
+4. update model mixin update()
+5.delete  model mxin delete()
+
+#generic act as baseclass for building api views
+
+# generic.GenericAPI_views provide essential functionalities such as get posst put delete
+
+'''
+
+"""MIXINS"""
+'''
+class Employees(mixins.ListModelMixin, mixins.CreateModelMixin ,generics.GenericAPIView):
+    queryset=employee.objects.all()
+    serializer_class=EmpSerializer
+    
+    def get(self,request):
+        return self.list(request)
+    def post(self,request):
+        return self.create(request)
+class emp(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+     queryset=employee.objects.all()
+     serializer_class=EmpSerializer
+     def get(self,request,pk):
+        return self.retrieve(request,pk)
+     def put(self, request, pk):
+         return self.update(request,pk)
+     def delete(self, request,pk):
+         return self.destroy(request, pk)
+'''
+
+'''
+@generic 
+list api view -> listing object
+create api view -> creating object
+retrive api view -> retriving a single object using primary key
+update api view -> updateing single object using pk
+destroy api view -> for deletion of object using pk
+listcreate api view -> listing and creating an objects
+retriveupdate api view -> retriving and updating object using primary key
+retriveupdatedestroy api view -> retriving and updating and deleting object using primary key
+'''
+
+#generics
+class Employees(generics.ListAPIView, generics.CreateAPIView):#we can also use listcreateAPIView
+    queryset=employee.objects.all()
+    serializer_class=EmpSerializer
+
+
+class emp( generics.RetrieveAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
+    queryset=employee.objects.all()
+    serializer_class=EmpSerializer
+    lookup_field='pk'

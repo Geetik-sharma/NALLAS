@@ -20,5 +20,6 @@ urlpatterns = [
     path('boomer/', admin.site.urls),
     path("insurance",include('insurance.urls')),
     path("employee",include('employee.urls')),
-    path("products",include("products.urls"))
+    path("products",include("products.urls")),
+    path("owned",include("owned.urls")),
 ]

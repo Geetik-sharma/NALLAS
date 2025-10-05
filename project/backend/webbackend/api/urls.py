@@ -8,7 +8,9 @@ urlpatterns=[
     path("/student/<int:pk>/",views.student_detail,name='primary view'),
 
     path("/employees/",views.Employees.as_view()),
-     path("/employees/<int:pk>",views.emp.as_view()),
+    path("/employees/<int:pk>",views.emp.as_view()),
      path("/product",views.prods.as_view()),
      path("/update/<int:pk>",views.Update_Prod.as_view()),
+     path("/owned",views.owned.as_view()),
+     path("/owned/<int:pk>",views.update_owned.as_view()),
 ]

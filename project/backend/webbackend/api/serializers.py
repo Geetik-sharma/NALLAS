@@ -2,6 +2,7 @@ from rest_framework import serializers
 from insurance import models
 from employee.models import employee
 from products.models import products
+from owned.models import owned_products
 class StudentSerialzers(serializers.ModelSerializer):
     class Meta:
         model=models.student
@@ -16,4 +17,9 @@ class EmpSerializer(serializers.ModelSerializer):
 class ProdSerializer(serializers.ModelSerializer):
     class Meta:
         model=products
+        fields="__all__"
+
+class OwnedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=owned_products
         fields="__all__"
